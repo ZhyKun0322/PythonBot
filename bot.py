@@ -4,6 +4,7 @@ import json
 from minecraft.networking.connection import Connection
 from minecraft.networking.packets import ChatMessagePacket
 from auth import handle_auth
+from commands import handle_command
 
 # Load config
 with open("config.json") as f:
@@ -31,6 +32,7 @@ def on_chat(packet):
     msg = packet.json_data
     print("[CHAT]", msg)
     handle_auth(msg, client, config["password"])
+    handle_command(msg, client, bot_position, client)
 
 # Track position updates
 @client.listener()
