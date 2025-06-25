@@ -41,7 +41,7 @@ def mine_sand(x, y, z, inventory):
 def smelt_sand(inventory):
     print("[Gather] Smelting sand into glass...")
     sand = inventory.get('sand', 0)
-    smelted = min(sand, 10)  # Simulate smelting 10 max
+    smelted = min(sand, 10)
     inventory['glass'] = inventory.get('glass', 0) + smelted
     inventory['sand'] -= smelted
     time.sleep(2)
@@ -55,6 +55,22 @@ def craft_glass_panes(inventory):
         inventory['glass'] -= (panes // 16) * 6
     time.sleep(1)
 
+def craft_spruce_items(inventory):
+    print("[Gather] Crafting planks, stairs, and slabs from logs")
+    logs = inventory.get('spruce_log', 0)
+    if logs > 0:
+        planks = logs * 4
+        inventory['spruce_planks'] = inventory.get('spruce_planks', 0) + planks
+        inventory['spruce_log'] = 0
+        stairs = (planks // 6) * 4
+        slabs = (planks // 3) * 6
+        inventory['spruce_stairs'] = inventory.get('spruce_stairs', 0) + stairs
+        inventory['spruce_slabs'] = inventory.get('spruce_slab', 0) + slabs
+        used_planks = (stairs // 4) * 6 + (slabs // 6) * 3
+        inventory['spruce_planks'] -= used_planks
+        print(f"Crafted {stairs} stairs and {slabs} slabs.")
+    time.sleep(1)
+
 def gather_materials(required, client, bot_position, inventory):
     print("[Gather] Starting material collection...")
 
@@ -66,7 +82,7 @@ def gather_materials(required, client, bot_position, inventory):
             tx, ty, tz = find_nearest_tree(bot_position)
             walk_to(tx, ty, tz, client)
             chop_tree(tx, ty, tz, inventory)
-            client.write_chat(f"Chopped a tree. Logs: {inventory['spruce_log']}")
+            client.write_chat(f"Chopped tree. Logs: {inventory['spruce_log']}")
 
     # GATHER WOOL
     needed_wool = required.get("white_wool", 0)
@@ -83,15 +99,17 @@ def gather_materials(required, client, bot_position, inventory):
     panes_have = inventory.get("glass_pane", 0)
     if panes_have < needed_panes:
         while inventory.get("glass_pane", 0) < needed_panes:
-            sand_x, sand_y, sand_z = find_nearest_sand(bot_position)
-            walk_to(sand_x, sand_y, sand_z, client)
-            mine_sand(sand_x, sand_y, sand_z, inventory)
+            sx, sy, sz = find_nearest_sand(bot_position)
+            walk_to(sx, sy, sz, client)
+            mine_sand(sx, sy, sz, inventory)
             fx, fy, fz = walk_to_furnace(bot_position)
             walk_to(fx, fy, fz, client)
             smelt_sand(inventory)
             craft_glass_panes(inventory)
             client.write_chat(f"Crafted panes. Panes: {inventory['glass_pane']}")
 
-    client.write_chat("Done gathering logs, wool, and glass panes!")
-    print("[Gather] All essential materials collected.")
-    
+    # CRAFT STAIRS & SLABS
+    craft_spruce_items(inventory)
+
+    client.write_chat("✅ Done gathering & crafting materials!")
+    print("[Gather] All items collected and crafted.")
