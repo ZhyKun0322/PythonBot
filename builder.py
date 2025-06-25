@@ -1,8 +1,12 @@
 from typing import List from mcpi.minecraft import Minecraft from mcpi import block import time
 
-Blueprint of the Japanese-style house (shortened here for brevity)
+Block codes for clarity
 
-blueprint = [[[...]]]  # Insert the full blueprint from previous output here
+W = "white_wool"        # Wall panel S = "spruce_planks"     # Flooring or porch L = "spruce_log"        # Pillars / frame G = "glass_pane"        # Window A = "air"               # Nothing T = "spruce_stairs"     # Roof tile B = "spruce_slab"       # Roof flat top
+
+3D Blueprint: [Y][Z][X]
+
+blueprint = [ [  # Layer 0 - Floor base [A, A, S, S, S, S, S, A, A], [A, S, S, S, S, S, S, S, A], [S, S, S, S, S, S, S, S, S], [S, S, S, S, S, S, S, S, S], [S, S, S, S, S, S, S, S, S], [A, S, S, S, S, S, S, S, A], [A, A, S, S, S, S, S, A, A] ], [  # Layer 1 - Pillars and base walls [A, A, L, A, A, A, L, A, A], [A, L, W, W, W, W, W, L, A], [L, W, W, G, G, G, W, W, L], [L, W, W, W, W, W, W, W, L], [L, W, W, G, G, G, W, W, L], [A, L, W, W, W, W, W, L, A], [A, A, L, A, A, A, L, A, A], ], [  # Layer 2 - Upper walls [A, A, L, A, A, A, L, A, A], [A, L, W, W, W, W, W, L, A], [L, W, A, A, G, A, A, W, L], [L, W, A, A, A, A, A, W, L], [L, W, A, A, G, A, A, W, L], [A, L, W, W, W, W, W, L, A], [A, A, L, A, A, A, L, A, A], ], [  # Layer 3 - Roof base (stairs layer) [A, T, A, A, A, A, A, T, A], [T, A, A, A, A, A, A, A, T], [A, A, A, A, A, A, A, A, A], [A, A, A, A, A, A, A, A, A], [A, A, A, A, A, A, A, A, A], [T, A, A, A, A, A, A, A, T], [A, T, A, A, A, A, A, T, A], ], [  # Layer 4 - Roof top (slabs) [A, A, A, A, B, A, A, A, A], [A, A, A, B, B, B, A, A, A], [A, A, B, B, B, B, B, A, A], [A, B, B, B, B, B, B, B, A], [A, A, B, B, B, B, B, A, A], [A, A, A, B, B, B, A, A, A], [A, A, A, A, B, A, A, A, A] ] ]
 
 Dictionary mapping from block name to Minecraft block ID (simplified version)
 
@@ -31,5 +35,4 @@ build_blueprint(mc, pos.x, pos.y, pos.z, blueprint)
 You can replace the example usage with a bot command handler or socket trigger.
 
 This code assumes a local Minecraft Pi or modded Java environment with mcpi API.
-
 
